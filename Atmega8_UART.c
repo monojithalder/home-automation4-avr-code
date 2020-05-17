@@ -13,36 +13,41 @@ int main() {
     UCSRB = (1<<TXEN) | (1<<RXEN);
     UCSRC = (1 << UCSZ1) | (1 << UCSZ0) | (1<<URSEL);
     UBRRL = 0X67;
-    pinMode('C',5,1);
-    pinMode('C',1,0);
+    pinMode('C',3,0);
     pinMode('C',4,0);
+    pinMode('C',2,1);
+    pinMode('C',1,1);
     int button = 0;
     int test = 0;
     unsigned char reccive;
+    unsigned char ch;
     int port_reccive = 66;
     while(1) {
         while(! (UCSRA & (1<<RXC)));
         {
             reccive = UDR;
-            
+            ch = ' ';
+            digitalWrite('C',2,0);
+            digitalWrite('C',1,0);
             if(reccive == 'A') {
                 reccive = ' ';
-                unsigned char ch = ' ';
                 _delay_ms(500);
-                port_reccive = digitalRead('C',5);
-                if(port_reccive == 1) {
+                port_reccive = digitalRead('C',3);
+                if(port_reccive == 0) {
+                    digitalWrite('C',2,1);
                     ch = 'O';
-                    while(! (UCSRA & (1<<UDRE)));
+                    while(! (UCSRA & (1<<TXC)));
                     {
-                        UDR = ch;
+                        UDR = 'O';
                         _delay_ms(500);
                     }  
                 }
                 else {
+                    digitalWrite('C',1,1);
                     ch = 'F';
-                    while(! (UCSRA & (1<<UDRE)));
+                    while(! (UCSRA & (1<<TXC)));
                     {
-                        UDR = ch;
+                        UDR = 'F';
                         _delay_ms(500);
                     } 
                 }
@@ -51,22 +56,21 @@ int main() {
             }
             if(reccive == 'B') {
                 reccive = ' ';
-                unsigned char ch = ' ';
                 _delay_ms(500);
                 port_reccive = digitalRead('C',4);
-                if(port_reccive == 1) {
+                if(port_reccive == 0) {
                     ch = 'O';
-                    while(! (UCSRA & (1<<UDRE)));
+                    while(! (UCSRA & (1<<TXC)));
                     {
-                        UDR = ch;
+                        UDR = 'O';
                         _delay_ms(500);
                     }  
                 }
                 else {
                     ch = 'F';
-                    while(! (UCSRA & (1<<UDRE)));
+                    while(! (UCSRA & (1<<TXC)));
                     {
-                        UDR = ch;
+                        UDR = 'F';
                         _delay_ms(500);
                     } 
                 }
